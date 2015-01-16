@@ -8,42 +8,38 @@ var print = function(err, options) {
   console.log(JSON.stringify(options, null, 2))
 }
 
-var models = new Datastore("path/models/models.db")
-models.loadDatabase()
 var verifiedModels = {}
 
 var InsertUpdate = module.exports = function(options, db) {
-  if (db)
-    models = db
+  if (!db)
+    db = new Datastore({filename: "path/models/models.db", autoload: true})
   if (options.constructor === Array) {
     for (var i=0; i<options.length; i++) 
-      mkModel(options[i])
+      mkModel(options[i], db)
   } 
   else { 
     if (options.type) 
-      mkModel(options)
+      mkModel(options, db)
     else
-      mkResource(options)
+      mkResource(options, db)
   }
 }
 
 // MODEL
 var mkModel = module.exports.mkModel = function (model, db) {
-  var models = db ? db : models
-
-  return Q.ninvoke(models, "find", {type: model.type})
-        .then(function(docs) {
-           if (!docs.length) 
-             return checkModel(model, models)
-           else 
-             throw new Error("model '" + type + "' was not found")
-        })
-        .then(function() {
-           return Q.ninvoke(models, "insert", model)
-        })
-        .catch(function(err) {
-           return err
-        }) 
+  return Q.ninvoke(db, "find", {type: model.type})
+    .then(function(docs) {
+       if (!docs.length) 
+         return checkModel(model, db)
+       else 
+         throw new Error("model '" + type + "' was not found")
+    })
+    .then(function() {
+       return Q.ninvoke(db, "insert", model)
+    })
+    .catch(function(err) {
+       return err
+    }) 
 }
 
 
@@ -76,24 +72,23 @@ var mkResource = module.exports.mkResource = function (resource, db) {
   var type = resource._type,
       verifiedResource = {},
       promisses = [],
-      models = db ? db : models,
       model;
 
-  return Q.ninvoke(models, 'find', {type: type})
+  return Q.ninvoke(db, 'find', {type: type})
     .then(function(docs) {
       model = docs[0]
       if (!model)
         throw new Error("model '" + type + '" does not exist')
-      checkModel(model, promisses, models)
+      checkModel(model, promisses, db)
       return Q.all(promisses)
     })
     .then(function() {
       checkResource(model, verifiedResource, resource)
-      return updateResource(type, verifiedResource, models)
+      return updateResource(type, verifiedResource, db)
     })    
-    // .catch(function(err) {
-    //   throw new Error(err)
-    // })    
+    .catch(function(err) {
+      throw new Error(err)
+    })    
 }
 function updateResource(type, verifiedResource, models) {
   if (!Object.keys(verifiedResource)) 
