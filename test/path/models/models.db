@@ -1,0 +1,6 @@
+{"type":"business.coffeeshop.InventoryItem","properties":{"name":{},"pricePerUnit":{"range":"base.currency.Money","version":"..."},"inventory":{"range":"business.coffeeshop.Inventory","version":"..."}},"_id":"6pXVXh5T1t89MvGE"}
+{"type":"base.ECKey","properties":{"curve":{"required":true},"private_key":{"range":"biginteger"},"public_key":{"required":true,"range":"base.ECPublicKey","version":"..."}},"_id":"70AxdkPxAj2vpyK5"}
+{"type":"business.coffeeshop.Inventory","properties":{"owner":{},"items":{"backLink":"inventory","range":"business.coffeeshop.InventoryItem","version":"..."}},"_id":"7i0L70gRySgygSQA"}
+{"type":"base.currency.Money","properties":{"value":{"required":true,"range":"double"},"currency":{}},"_id":"JNbxCMBpQr2yL0kL"}
+{"type":"base.ECPublicKey","properties":{"x":{"required":true},"y":{}},"_id":"WNwjtS7VPCIcCCru"}
+{"type":"base.Entity","properties":{"public_key":{"range":"base.ECPublicKey","version":"...ECPublicKey version hash..."}},"_id":"YdONoYIbNSxFXHhm"}

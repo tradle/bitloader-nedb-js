@@ -1,0 +1,129 @@
+"use strict"
+var fs = require('fs'),
+    nedbLoader = require('..'),
+    Datastore = require('nedb'),
+    Q = require("q"),
+    modelsDb = new Datastore("test/path/models/models.db")
+
+
+function removeResources(docs, rDb) {
+  // var promisses = []
+  // docs.forEach(function(doc) {
+  //  promisses.push(Q.ninvoke(modelsDb, "remove", doc))
+  // })
+  var promisses = docs.map(function(doc) {
+    return Q.ninvoke(rDb, "remove", doc)
+  })
+
+  return Q.all(promisses)
+}
+
+describe('Creating Resources', function(){
+  this.timeout(30000)
+  before(function(done){
+    modelsDb.loadDatabase()
+    fs.readdir('test/path/resources', function(err, files) {
+      //  if (err)
+      // return done(err)
+      if (!files  ||  files.length == 0) 
+        return done()
+      var fcnt = 0
+      var dfd = Q.defer()
+      files.forEach(function(filename) {
+        var rDb = new Datastore({"filename": "test/path/resources/" + filename, autoload:true})
+            // rDb.loadDatabase()
+
+        Q.ninvoke(rDb, "find", {})
+         .then(function(docs) {
+          fcnt++
+          if (docs.length) 
+            return removeResources(docs, rDb)
+         })
+         .then(function() {
+           if (fcnt == files.length)
+            dfd.resolve()
+         })
+         .catch(function(err) {
+           throw new Error(err)
+         })
+        // rDb.find({}, function(err, docs){
+        //   var cnt = 0
+        //   if (docs.length) {
+        //     docs.forEach(function(doc) {
+        //       rDb.remove({}, function(err, numberRemoved){
+        //         cnt++
+        //         if (err)
+        //           return dfd.reject(err)
+        //         else if (cnt == docs.length)
+        //           fcnt++
+        //        })
+        //     })
+        //   }
+        //   if (fcnt == files.length)
+        //     return dfd.resolve()       
+        // })
+      })
+      dfd.promise.then (function() {
+        return done()
+      }, function(err) {
+        return done(err)
+      })
+    })
+  })  
+  it("Creating new resources", function(done) {
+    var resources = [
+      {
+        "_type": "base.ECPublicKey",
+        "_type_version": "...",
+        "x": "a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd",
+        "y": "5b8dec5235a0fa8722476c7709c02559e3aa73aa03918ba2d492eea75abea235"
+      },
+      {
+        "_type": "business.common.PointyReceipt",
+        "_type_version": "HLEmy3udN1HJYTWVesCtAjwT1fVj45BghES7KvZznwMs",
+        "buyer": "...hash of buyer entity resource...",
+        "seller": "..hash of seller entity resource...",
+        "for": "even better stuff than last time, don't worry",
+        "total": "0.1BTC",
+        "date": 141437553970
+      },
+      {
+        "_type": "base.ECPublicKey",
+        "_type_version": "...",
+        "x": "a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5be",
+        "y": "5b8dec5235a0fa8722476c7709c02559e3aa73aa03918ba2d492eea75abea23e"
+      }
+      ]
+      var promisses = []
+
+      for (var i=0; i<resources.length; i++)
+        promisses.push(nedbLoader.mkResource(resources[i], modelsDb))
+      Q.allSettled(promisses).then(function(results) {
+        for (var i=0; i<results.length; i++){
+          var r = results[i]
+          if (r.reason)
+            return done(r.reason)
+        }
+        return done()     
+      })
+  })
+  it("Creating resource of non-existing type", function(done) {
+    var resources = [
+    {
+      "_type": "base.ECPubKey",
+      "_type_version": "...",
+      "x": "a34b99f22c790c4e36b2b3c2c35a36db06226e41c692fc82b8b56ac1c540c5bd",
+      "y": "5b8dec5235a0fa8722476c7709c02559e3aa73aa03918ba2d492eea75abea235"
+    }
+    ]
+    var promisses = []
+
+    for (var i=0; i<resources.length; i++)
+      promisses.push(nedbLoader.mkResource(resources[i], modelsDb))
+    Q.all(promisses).then(function() {
+      return done()     
+    }, function(err) {
+      return done(err)
+    })
+  }) 
+})

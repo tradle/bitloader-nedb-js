@@ -1,0 +1,21 @@
+{
+  "name": "nedb-for-blockchain",
+  "version": "0.0.1",
+  "description": "...",
+  "main": "index.js",
+  "dependencies": {
+    "q": "~1.1.2"
+  },
+  "devDependencies": {
+    "minimist": "~1.1.0",
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nedb",
+    "blockchain"
+  ],
+  "author": "",
+  "license": "MIT"
+}
