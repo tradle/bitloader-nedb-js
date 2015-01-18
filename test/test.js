@@ -1,6 +1,6 @@
 "use strict"
 var fs = require('fs'),
-    nedbLoader = require('..'),
+    nedbLoader = require('../bitloader.js'),
     Q = require("q"),
     Datastore = require('nedb'),
 	  modelsDb // = new Datastore("test/path/models/models.db")
