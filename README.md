@@ -51,7 +51,7 @@ Type in your browser **URL** that is
 **Example** 
 for a model above it is going to be
 
-``127.0.0.1:3000?json={	"type": "base.ECPublicKey",	"properties": {"x": {"required": true}, "y": {}	}}``
+``127.0.0.1:3000?json={"type": "base.ECPublicKey","properties": {"x": {"required": true}, "y": {}}}``
 
 
 
