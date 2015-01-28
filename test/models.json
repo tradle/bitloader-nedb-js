@@ -1,0 +1,64 @@
+[{
+  "type": "base.ECPublicKey",
+  "properties": {
+    "x": {
+      "required": true
+    },
+    "y": {}
+  }
+}, {
+  "type": "base.currency.Money",
+  "properties": {
+    "value": {
+      "required": true,
+      "range": "double"
+    },
+    "currency": {}
+  }
+}, {
+  "type": "base.Entity",
+  "properties": {
+    "public_key": {
+      "range": "base.ECPublicKey",
+      "version": "...ECPublicKey version hash..."
+    }
+  }
+}, {
+  "type": "base.ECKey",
+  "properties": {
+    "curve": {
+      "required": true
+    },
+    "private_key": {
+      "range": "biginteger"
+    },
+    "public_key": {
+      "required": true,
+      "range": "base.ECPublicKey",
+      "version": "..."
+    }
+  }
+}, {
+  "type": "business.coffeeshop.Inventory",
+  "properties": {
+    "owner": {},
+    "items": {
+      "backLink": "inventory",
+      "range": "business.coffeeshop.InventoryItem",
+      "version": "..."
+    }
+  }
+}, {
+  "type": "business.coffeeshop.InventoryItem",
+  "properties": {
+    "name": {},
+    "pricePerUnit": {
+      "range": "base.currency.Money",
+      "version": "..."
+    },
+    "inventory": {
+      "range": "business.coffeeshop.Inventory",
+      "version": "..."
+    }
+  }
+}]

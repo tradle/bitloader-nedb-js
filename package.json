@@ -4,14 +4,30 @@
   "description": "...",
   "main": "index.js",
   "dependencies": {
+    "nedb": "^1.1.1",
     "q": "~1.1.2"
   },
   "devDependencies": {
-    "minimist": "~1.1.0"
+    "js-beautify": "^1.5.4",
+    "jscs": "^1.10.0",
+    "jshint": "^2.6.0",
+    "minimist": "~1.1.0",
+    "mocha": "^2.1.0",
+    "pre-commit": "0.0.11",
+    "tradle-style": "latest",
+    "which": "^1.0.8"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "jsbeautify": "js-beautify -r {*.js,test/*.js} --config node_modules/tradle-style/.jsbeautifyrc",
+    "jshint": "jshint {*.js,**/*.js} --config node_modules/tradle-style/.jshintrc --exclude-path=.gitignore",
+    "jscs": "jscs {*.js,**/*.js} --config node_modules/tradle-style/.jscsrc",
+    "test": "mocha test"
   },
+  "pre-commit": [
+    "test",
+    "jscs",
+    "jshint"
+  ],
   "keywords": [
     "nedb",
     "blockchain"

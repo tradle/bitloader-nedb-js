@@ -2,13 +2,12 @@ var express = require('express')
 var loader = require('./')
 var app = express()
 
-app.get('/', function (req, res) {
+app.get('/', function(req, res) {
   if (req.param('json'))
-	loader(JSON.parse(req.param('json')))
+    loader(JSON.parse(req.param('json')))
 })
 
-
-var server = app.listen(3000, function () {
+var server = app.listen(3000, function() {
 
   var host = server.address().address
   var port = server.address().port
