@@ -39,6 +39,27 @@
     }
   }
 }, {
+  "_previous_version": "8CjPwMZwHuG9EeBZHJXBbDnZvB3RWoUP4LRcqB3WVRPR",
+  "type": "business.common.PointyReceipt",
+  "properties": {
+    "buyer": {
+      "range": "base.Entity",
+      "version": "..."
+    },
+    "seller": {
+      "range": "base.Entity",
+      "version": "..."
+    },
+    "for": {},
+    "total": {
+      "range": "base.currency.Money",
+      "version": "..."
+    },
+    "date": {
+      "range": "long"
+    }
+  }
+}, {
   "type": "business.coffeeshop.Inventory",
   "properties": {
     "owner": {},

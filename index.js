@@ -4,6 +4,7 @@ var Q = require('q')
 var dataTypes = ['long', 'boolean', 'biginteger', 'double', 'date', 'string']
 var resourceDBs = {}
 var verifiedModels = {}
+var verifyingModels = {}
 
 module.exports = function InsertUpdate(options, db) {
   if (!db)
@@ -11,9 +12,22 @@ module.exports = function InsertUpdate(options, db) {
       filename: 'path/models/models.db',
       autoload: true
     })
-  if (options.constructor === Array) {
-    for (var i = 0; i < options.length; i++)
-      mkModel(options[i], db)
+  if (options.loadAllFirst) {
+    loadModels(options, db)
+      .then(function() {
+        console.log('All models were successfully loaded')
+      })
+  } else if (options.constructor === Array) {
+    mkModels(options, db)
+      .then(function() {
+        console.log('Successful models loading')
+      })
+      .catch(function(err) {
+        throw new Error(err)
+      })
+
+    // for (var i = 0; i < options.length; i++)
+    //   mkModel(options[i], db)
   } else {
     if (options.type)
       mkModel(options, db)
@@ -22,10 +36,59 @@ module.exports = function InsertUpdate(options, db) {
   }
 }
 
+function series(tasks) {
+  return tasks.reduce(function(last, cur) {
+    return last.then(cur);
+  }, Q.resolve());
+}
+
 module.exports.mkModel = mkModel
+module.exports.mkModels = mkModels
+module.exports.loadModels = loadModels
 module.exports.mkResource = mkResource
 
-// MODEL
+function mkModels(models, db) {
+  return series(models.map(function(model) {
+    return function() {
+      return mkModel(model, db).then(function() {
+        console.log(model.type)
+      })
+    }
+  }))
+}
+
+function loadModels(models, db) {
+  return series(models.map(function(model) {
+      return function() {
+        return loadModel(model, db).then(function() {
+          console.log(model.type)
+        })
+      }
+    }))
+    .then(function() {
+      return series(models.map(function(model) {
+        return function() {
+          return checkModel(model, db).then(function() {
+            console.log(model.type)
+          })
+        }
+      }))
+    })
+}
+
+function loadModel(model, db) {
+    return Q.ninvoke(db, 'find', {
+        type: model.type
+      })
+      .then(function(docs) {
+        if (!docs.length)
+          return Q.ninvoke(db, 'insert', model)
+      })
+      .catch(function(err) {
+        throw new Error(err)
+      })
+  }
+  // MODEL
 function mkModel(model, db) {
   return Q.ninvoke(db, 'find', {
       type: model.type
@@ -40,7 +103,7 @@ function mkModel(model, db) {
       return Q.ninvoke(db, 'insert', model)
     })
     .catch(function(err) {
-      return err
+      throw new Error(err)
     })
 }
 
@@ -55,7 +118,11 @@ function checkModel(model, db) {
     // allow backlink properties with not yet defined models
     if (idx !== -1 || meta[p].backLink)
       continue
-    promisses.push(checkRange(range, promisses, db))
+
+    if (!verifiedModels[range] && !verifyingModels[range]) {
+      verifyingModels[range] = range
+      promisses.push(checkRange(range, promisses, db))
+    }
   }
   return Q.all(promisses)
 }
@@ -65,6 +132,7 @@ function checkRange(range, promisses, db) {
         type: range
       })
       .then(function(docs) {
+        verifyingModels[range] = null
         if (docs.length)
           verifiedModels[docs[0].type] = docs[0]
         else

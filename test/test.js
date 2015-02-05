@@ -18,13 +18,16 @@ function removeModels(docs) {
   return Q.all(promisses)
 }
 describe('Creating Models', function() {
-  before(function(done) {
+  beforeEach(function(done) {
     fs.readdir('test/path/models', function(err, files) {
       if (err)
         return done(err)
       else if (files.length === 0) {
-        modelsDb = new Datastore('test/path/models/models.db')
-        modelsDb.loadDatabase()
+        modelsDb = new Datastore({
+            filename: 'test/path/models/models.db',
+            autoload: true
+          })
+          // modelsDb.loadDatabase()
         return done()
       }
 
@@ -45,14 +48,16 @@ describe('Creating Models', function() {
     })
   })
   it('Creating several models', function(done) {
-    var promisses = []
-    for (var i = 0; i < models.length; i++)
-      promisses.push(nedbLoader.mkModel(models[i], modelsDb))
-    Q.all(promisses).then(function() {
-      return done()
-    }, function(err) {
-      return done(err)
-    })
+    nedbLoader.mkModels(models, modelsDb)
+      .finally(function(err) {
+        return done()
+      })
+  })
+  it('Loading all models first and then verifying them', function(done) {
+    nedbLoader.loadModels(models, modelsDb)
+      .finally(function(err) {
+        return done()
+      })
   })
 
 })
