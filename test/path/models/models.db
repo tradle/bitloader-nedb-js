@@ -1,6 +1,7 @@
-{"type":"base.currency.Money","properties":{"value":{"required":true,"range":"double"},"currency":{}},"_id":"9VeIakiHNPom1mn3"}
-{"type":"base.Entity","properties":{"public_key":{"range":"base.ECPublicKey","version":"...ECPublicKey version hash..."}},"_id":"QyDqB0HKnxKPf7fj"}
-{"type":"business.coffeeshop.Inventory","properties":{"owner":{},"items":{"backLink":"inventory","range":"business.coffeeshop.InventoryItem","version":"..."}},"_id":"ihwuSMc1hL7KmodH"}
-{"type":"base.ECPublicKey","properties":{"x":{"required":true},"y":{}},"_id":"nvtx9AREeExl30oM"}
-{"type":"business.coffeeshop.InventoryItem","properties":{"name":{},"pricePerUnit":{"range":"base.currency.Money","version":"..."},"inventory":{"range":"business.coffeeshop.Inventory","version":"..."}},"_id":"t9jMlGdKVrAO24O0"}
-{"type":"base.ECKey","properties":{"curve":{"required":true},"private_key":{"range":"biginteger"},"public_key":{"required":true,"range":"base.ECPublicKey","version":"..."}},"_id":"wYnrFISBFoyBHUuH"}
+{"type":"base.ECKey","properties":{"curve":{"required":true},"private_key":{"range":"biginteger"},"public_key":{"required":true,"range":"base.ECPublicKey","version":"..."}},"_id":"6Gg5gdS5h61wfpix"}
+{"_previous_version":"8CjPwMZwHuG9EeBZHJXBbDnZvB3RWoUP4LRcqB3WVRPR","type":"business.common.PointyReceipt","properties":{"buyer":{"range":"base.Entity","version":"..."},"seller":{"range":"base.Entity","version":"..."},"for":{},"total":{"range":"base.currency.Money","version":"..."},"date":{"range":"long"}},"_id":"GgygZzGBaNTg9C7O"}
+{"type":"base.currency.Money","properties":{"value":{"required":true,"range":"double"},"currency":{}},"_id":"JFugfe8Ei8p06Lg7"}
+{"type":"business.coffeeshop.InventoryItem","properties":{"name":{},"pricePerUnit":{"range":"base.currency.Money","version":"..."},"inventory":{"range":"business.coffeeshop.Inventory","version":"..."}},"_id":"Uz9MFRGd2U2vXQ8X"}
+{"type":"business.coffeeshop.Inventory","properties":{"owner":{},"items":{"backLink":"inventory","range":"business.coffeeshop.InventoryItem","version":"..."}},"_id":"XPHxIWks7nSMKVVJ"}
+{"type":"base.ECPublicKey","properties":{"x":{"required":true},"y":{}},"_id":"aVCTbkQ3zuWH8sDD"}
+{"type":"base.Entity","properties":{"public_key":{"range":"base.ECPublicKey","version":"...ECPublicKey version hash..."}},"_id":"bKwwJTFS3pnpNQcB"}

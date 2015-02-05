@@ -23,8 +23,8 @@ describe('Creating Models', function() {
       if (err)
         return done(err)
       else if (files.length === 0) {
-        modelsDb = new Datastore('test/path/models/models.db')
-        modelsDb.loadDatabase()
+        modelsDb = new Datastore({filename:'test/path/models/models.db', autoload:true})
+        // modelsDb.loadDatabase()
         return done()
       }
 
@@ -45,14 +45,43 @@ describe('Creating Models', function() {
     })
   })
   it('Creating several models', function(done) {
-    var promisses = []
-    for (var i = 0; i < models.length; i++)
-      promisses.push(nedbLoader.mkModel(models[i], modelsDb))
-    Q.all(promisses).then(function() {
+
+    // // var promisses = []
+    // // for (var i = 0; i < models.length; i++)
+    // //   promisses.push(nedbLoader.mkModel(models[i], modelsDb))
+    // // debugger;
+    // series(models.map(function(model) {
+    //   return function() {
+    //     console.log('Starting ' + model.type);
+    //     return nedbLoader.mkModel(model, modelsDb).then(function() {
+    //       console.log('Finished ' + model.type);
+    //     });
+    //   }
+    // }))
+    // .then(function() {
+    //   return done()
+    // })
+    // .catch(function (err) {
+    //   return done(err)
+    // })
+
+    nedbLoader.mkModels(models, modelsDb)
+    .finally(function(err) {
       return done()
-    }, function(err) {
-      return done(err)
     })
+    // var t = [models]
+    // series(t.map(function(tt) {
+    //   return function() {
+    //     return nedbLoader.mkModels(tt, modelsDb)
+    //   }
+    // }))
+
   })
 
 })
+
+function series(tasks) {
+  return tasks.reduce(function(last, cur) {
+    return last.then(cur);
+  }, Q());
+}

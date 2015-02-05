@@ -20,7 +20,7 @@ function removeResources(docs, rDb) {
 }
 
 describe('Creating Resources', function() {
-  this.timeout(30000)
+//  this.timeout(10000)
   before(function(done) {
     modelsDb.loadDatabase()
     fs.readdir('test/path/resources', function(err, files) {
@@ -50,28 +50,28 @@ describe('Creating Resources', function() {
           .catch(function(err) {
             throw new Error(err)
           })
-          // rDb.find({}, function(err, docs){
-          //   var cnt = 0
-          //   if (docs.length) {
-          //     docs.forEach(function(doc) {
-          //       rDb.remove({}, function(err, numberRemoved){
-          //         cnt++
-          //         if (err)
-          //           return dfd.reject(err)
-          //         else if (cnt == docs.length)
-          //           fcnt++
-          //        })
-          //     })
-          //   }
-          //   if (fcnt == files.length)
-          //     return dfd.resolve()
-          // })
       })
       dfd.promise.then(function() {
         return done()
       }, function(err) {
         return done(err)
       })
+    })
+  })
+  it('Creating resource of non-existing type', function(done) {
+    var resources = ecPubKey;
+    var promisses = []
+
+    for (var i = 0; i < resources.length; i++)
+      promisses.push(nedbLoader.mkResource(resources[i], modelsDb))
+    Q.all(promisses)
+    // .then(function() {
+    //   return done()
+    // })
+    .catch (function(err) {
+      // assert(err == null, err)
+      return done()
+      // return done(err)
     })
   })
   it('Creating new resources', function(done) {
@@ -82,22 +82,11 @@ describe('Creating Resources', function() {
     Q.allSettled(promisses).then(function(results) {
       for (var i = 0; i < results.length; i++) {
         var r = results[i]
-        if (r.reason)
+        if (r.reason) 
           return done(r.reason)
+        
       }
       return done()
-    })
-  })
-  it('Creating resource of non-existing type', function(done) {
-    var resources = ecPubKey;
-    var promisses = []
-
-    for (var i = 0; i < resources.length; i++)
-      promisses.push(nedbLoader.mkResource(resources[i], modelsDb))
-    Q.all(promisses).then(function() {
-      return done()
-    }, function(err) {
-      return done(err)
     })
   })
 })
