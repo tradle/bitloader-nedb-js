@@ -1,6 +1,0 @@
-{"_previous_version":"8CjPwMZwHuG9EeBZHJXBbDnZvB3RWoUP4LRcqB3WVRPR","type":"business.common.PointyReceipt","properties":{"buyer":{"range":"base.Entity","version":"..."},"seller":{"range":"base.Entity","version":"..."},"for":{},"total":{"range":"base.currency.Money","version":"..."},"date":{"range":"long"}},"_id":"0RwSJsW4ShaeyTEH"}
-{"type":"base.ECPublicKey","properties":{"x":{"required":true},"y":{}},"_id":"AK2oSNJ85fspdA7T"}
-{"type":"business.common.Receipt","properties":{"buyer":{},"seller":{},"for":{},"total":{},"date":{}},"_id":"CSu7U0iwaRzsRReM"}
-{"type":"base.Entity","properties":{"public_key":{"range":"base.ECPublicKey","version":"...ECPublicKey version hash..."}},"_id":"Kl2tEo2qsrGpQ4oj"}
-{"type":"base.ECPublicKey","properties":{"x":{"required":true},"y":{}},"_id":"itniVVjqcaHbhHxQ"}
-{"type":"base.currency.Money","properties":{"value":{"required":true,"range":"float"},"currency":{}},"_id":"lFku9P9Co5ZWVAXK"}

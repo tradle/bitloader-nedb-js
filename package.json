@@ -21,7 +21,7 @@
     "jsbeautify": "js-beautify -r {*.js,test/*.js} --config node_modules/tradle-style/.jsbeautifyrc",
     "jshint": "jshint {*.js,**/*.js} --config node_modules/tradle-style/.jshintrc --exclude-path=.gitignore",
     "jscs": "jscs {*.js,**/*.js} --config node_modules/tradle-style/.jscsrc",
-    "test": "mocha test"
+    "test": "mocha test/test"
   },
   "pre-commit": [
     "test",
