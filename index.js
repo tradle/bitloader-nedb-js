@@ -12,7 +12,13 @@ module.exports = function InsertUpdate(options, db) {
       filename: 'path/models/models.db',
       autoload: true
     })
-  if (options.constructor === Array) {
+  if (options.loadAllFirst) {
+    loadModels(options, db)
+    .then(function() {
+      console.log('All models were successfully loaded')
+    })
+  } 
+  else if (options.constructor === Array) {
     mkModels(options, db)
     .then(function() {
       console.log('Successful models loading')
@@ -40,6 +46,7 @@ function series(tasks) {
 
 module.exports.mkModel    = mkModel
 module.exports.mkModels   = mkModels
+module.exports.loadModels = loadModels
 module.exports.mkResource = mkResource
 
 function mkModels(models, db) {
@@ -50,6 +57,36 @@ function mkModels(models, db) {
       })  
     }
   }))
+}
+function loadModels(models, db) {
+  return series(models.map(function(model) {
+    return function() {
+      return loadModel(model, db).then(function() {
+        console.log(model.type)
+      })  
+    }
+  }))
+  .then(function () {
+    return series(models.map(function(model) {
+      return function() {
+        return checkModel(model, db).then(function() {
+          console.log(model.type)
+        })  
+      }
+    }))
+  })
+}
+function loadModel(model, db) {
+  return Q.ninvoke(db, 'find', {
+      type: model.type
+    })
+    .then(function(docs) {
+      if (!docs.length)
+        return Q.ninvoke(db, 'insert', model)
+    })
+    .catch(function(err) {
+      throw new Error(err)
+    })
 }
 // MODEL
 function mkModel(model, db) {
